@@ -6,28 +6,28 @@
     </div>
     <div class="content">
       <h2>正在进行</h2>
+      <span>{{processCnt}}</span>
       <div>
         <ul>
           <li v-for="(item, index) in list"  v-if="item.checked == false">
             <input  type="checkbox" class="check" v-model="item.checked">
             {{item.title}}
-            <button @click="deleteText(index)">删除</button>
+            <img src="./assets/delete.png" @click="deleteText(index)">
           </li>
         </ul>
       </div>
       <h2 >已经完成</h2>
+      <span>{{finishCnt}}</span>
       <div>
         <ul>
           <li v-for="(item, index) in list" v-if="item.checked == true">
             <input type="checkbox"  class="check" v-model="item.checked">
             {{item.title}}
-            <button @click="deleteText(index)">删除</button>
+            <img src="./assets/delete.png" @click="deleteText(index)">
           </li>
         </ul>
       </div>
     </div>
-     <input type="checkbox" id="myCheck">
-    <label for="myCheck"></label>
   </div>
 </template>
 
@@ -38,6 +38,8 @@ export default {
     return {
       list:[],
       newText:"",
+      processCnt:0,
+      finishCnt:0,
     }
   },
   methods:{
@@ -51,6 +53,23 @@ export default {
     },
     deleteText(index) {
       this.list.splice(index,1);
+    }
+  },
+  watch: {
+    list: {
+      handler: function (newVal, oldVal) {
+        var finishCnt = 0;
+        var allCnt = newVal.length;
+        for (var i = 0; i < allCnt; i++) {
+          var item = newVal[i];
+          if (item.checked) {
+            finishCnt += 1;
+          }
+        }
+        this.finishCnt = finishCnt;
+        this.processCnt = allCnt - finishCnt;
+      },
+      deep: true
     }
   }
 }
@@ -85,7 +104,8 @@ export default {
     line-height: 20px;
     /*border: 0px*/
     margin-top: 13px;
-    margin-left: 150px;
+    margin-left: 40px;
+    width: 320px;
   }
   .content {
     clear:both;
@@ -94,10 +114,49 @@ export default {
   .check {
     height: 20px;
     width: 20px;
+    vertical-align:middle;
+    margin-top:0px;
   }
 
-  ul>li {
-    list-style: none; 
+  h2 {
+    display: inline-block;
+  }
+
+  span {
+    width: 20px;
+    height: 20px;
+    border-radius:20px;
+    background-color: #D3D3D3;
+    line-height: 20px;
+    font-size: 15px;
+    margin-left: 300px;
+  }
+
+
+  ul {
+    padding-left: 0px;
+  }
+
+  li {
+    list-style: none;
+    width: 450px;
+    background-color: #FFFFFF;
+    margin-bottom: 5px;
+    margin-top: 5px;
+    padding-left:  5px;
+    padding-right:  5px;
+    border-left: 5px solid #008080;
+    border-radius:2px;
+    height:30px;
+    line-height: 30px;
+    vertical-align: middle;
+  }
+
+  li img {
+    float: right;
+    width: 18px;
+    height: 18px;
+    margin-top: 5px;
   }
 
 </style>
