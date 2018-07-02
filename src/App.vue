@@ -32,6 +32,8 @@
 </template>
 
 <script>
+import storage from './module/storage.js';
+
 export default {
   name: 'app',
   data () {
@@ -44,15 +46,20 @@ export default {
   },
   methods:{
     addText(event) {
-      console.log(event);
       if ((event.type == "click" || event.keyCode == 13) && this.newText.trim() != "") {
         var newItem = {'title':this.newText,'checked':false};
         this.list.push(newItem);
-        this.newText = "";      
+        this.newText = "";    
       }
     },
     deleteText(index) {
       this.list.splice(index,1);
+    }
+  },
+  mounted:function() {
+    var list = storage.get('list');
+    if (list) {
+      this.list = list;
     }
   },
   watch: {
@@ -68,6 +75,7 @@ export default {
         }
         this.finishCnt = finishCnt;
         this.processCnt = allCnt - finishCnt;
+        storage.set('list',this.list);   
       },
       deep: true
     }
